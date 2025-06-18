@@ -46,7 +46,6 @@ public struct ReturnSelfMacro: PeerMacro {
         )
 
         // 5. Создаем НОВУЮ функцию с другим именем чтобы избежать конфликта
-        // Добавляем суффикс к имени функции
         let originalName = functionDecl.name.text
         let newName = TokenSyntax.identifier(originalName + "AndReturnSelf")
 

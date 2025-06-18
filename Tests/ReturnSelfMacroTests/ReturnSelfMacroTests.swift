@@ -27,7 +27,7 @@ final class ReturnSelfMacroTests: XCTestCase {
                 }
 
                 @discardableResult
-                    func increment() -> Self {
+                    func incrementAndReturnSelf() -> Self {
                         value += 1
                         return self
                 }
@@ -58,7 +58,7 @@ final class ReturnSelfMacroTests: XCTestCase {
 
                 @discardableResult
 
-                    mutating     func update() -> Self {
+                    mutating     func updateAndReturnSelf() -> Self {
                         value += 1
                         return self
                 }
