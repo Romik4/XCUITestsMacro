@@ -45,7 +45,10 @@ public struct ReturnSelfMacro: PeerMacro {
             )
         )
 
-        // 5. Создаем НОВУЮ функцию на основе исходной, но с модификациями.
+        // 5. Создаем НОВУЮ функцию с другим именем чтобы избежать конфликта
+        // Добавляем суффикс к имени функции
+        let originalName = functionDecl.name.text
+        let newName = TokenSyntax.identifier(originalName + "AndReturnSelf")
 
         // Управляем атрибутами:
         // Фильтруем атрибуты, исключая @returnSelf чтобы избежать рекурсии
@@ -70,10 +73,11 @@ public struct ReturnSelfMacro: PeerMacro {
         }
         let newFuncKeyword = TokenSyntax.keyword(.func, leadingTrivia: .spaces(4))
         
-        // Создаем новую функцию
+        // Создаем новую функцию с измененным именем
         let generatedFunction = functionDecl
             .with(\.attributes, newAttributes)
             .with(\.funcKeyword, newFuncKeyword)
+            .with(\.name, newName)
             .with(\.body, newFunctionBody)
             .with(\.signature, newSignature)
             .with(\.leadingTrivia, .spaces(4))

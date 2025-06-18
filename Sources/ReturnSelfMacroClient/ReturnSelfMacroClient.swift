@@ -6,10 +6,11 @@ class MyClass {
     var name: String = "Guest"
 
     // Пример 1: Простая функция без возвращаемого значения
-    // Макрос @returnSelf применит к ней:
+    // Макрос @returnSelf создаст новую функцию:
     // @discardableResult
-    // func incrementCounter() -> Self {
+    // func incrementCounterAndReturnSelf() -> Self {
     //     counter += 1
+    //     print("Counter incremented to \(counter)")
     //     return self
     // }
     @returnSelf
@@ -19,9 +20,9 @@ class MyClass {
     }
 
     // Пример 2: Еще одна функция без возвращаемого значения, с другим телом
-    // Макрос @returnSelf применит к ней:
+    // Макрос @returnSelf создаст новую функцию:
     // @discardableResult
-    // func updateName(newName: String) -> Self {
+    // func updateNameAndReturnSelf(newName: String) -> Self {
     //     self.name = newName
     //     print("Name updated to \(name)")
     //     return self
@@ -42,4 +43,19 @@ class MyClass {
     func printState() {
         print("Current state: Counter = \(counter), Name = \(name)")
     }
+}
+
+// Пример использования с новыми именами функций
+func demonstrateUsage() {
+    let user = MyClass()
+    
+    // Используем оригинальные функции
+    user.incrementCounter()
+    user.updateName(newName: "John")
+    
+    // Используем сгенерированные функции для цепочки вызовов
+    let result = user
+        .incrementCounterAndReturnSelf()
+        .updateNameAndReturnSelf(newName: "Jane")
+        .printState()
 }
