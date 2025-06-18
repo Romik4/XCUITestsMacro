@@ -14,6 +14,11 @@ public struct ReturnSelfMacro: PeerMacro {
             return []
         }
 
+        // Не генерируем функцию, если имя уже содержит суффикс
+        if functionDecl.name.text.hasSuffix("AndReturnSelf") {
+            return []
+        }
+
         if functionDecl.signature.returnClause != nil {
             return []
         }
@@ -46,23 +51,20 @@ public struct ReturnSelfMacro: PeerMacro {
         )
 
         // 5. Создаем НОВУЮ функцию с другим именем чтобы избежать конфликта
+        // Добавляем суффикс к имени функции
         let originalName = functionDecl.name.text
         let newName = TokenSyntax.identifier(originalName + "AndReturnSelf")
 
-        // Управляем атрибутами:
-        // Фильтруем атрибуты, исключая @returnSelf чтобы избежать рекурсии
+        // Фильтруем атрибуты, исключая @returnSelf
         var newAttributes = AttributeListSyntax([])
-        
         for attribute in functionDecl.attributes {
-            if let attributeSyntax = attribute.as(AttributeSyntax.self) {
-                if attributeSyntax.attributeName.description != "returnSelf" {
-                    newAttributes.append(attribute)
-                }
-            } else {
-                newAttributes.append(attribute)
+            if let attributeSyntax = attribute.as(AttributeSyntax.self),
+               let identifier = attributeSyntax.attributeName.as(IdentifierTypeSyntax.self),
+               identifier.name.text == "returnSelf" {
+                continue
             }
+            newAttributes.append(attribute)
         }
-        
         // Добавляем @discardableResult
         newAttributes.append(AttributeListSyntax.Element(discardableResultAttributeElement))
 
