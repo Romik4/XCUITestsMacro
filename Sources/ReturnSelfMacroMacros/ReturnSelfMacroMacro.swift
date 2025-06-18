@@ -48,8 +48,20 @@ public struct ReturnSelfMacro: PeerMacro {
         // 5. Создаем НОВУЮ функцию на основе исходной, но с модификациями.
 
         // Управляем атрибутами:
+        // Фильтруем атрибуты, исключая @returnSelf чтобы избежать рекурсии
+        var newAttributes = AttributeListSyntax([])
+        
+        for attribute in functionDecl.attributes {
+            if let attributeSyntax = attribute.as(AttributeSyntax.self) {
+                if attributeSyntax.attributeName.description != "returnSelf" {
+                    newAttributes.append(attribute)
+                }
+            } else {
+                newAttributes.append(attribute)
+            }
+        }
+        
         // Добавляем @discardableResult
-        var newAttributes = functionDecl.attributes
         newAttributes.append(AttributeListSyntax.Element(discardableResultAttributeElement))
 
         if let lastAttributeIndex = newAttributes.indices.last {
